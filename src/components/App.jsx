@@ -1,12 +1,25 @@
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, StyledText, StyledTitle, StyledHeading } from './Styled';
-import { selectContacts } from '../redux/selectors';
+import {
+  selectContacts,
+  selectError,
+  selectIsLoading,
+} from '../redux/selectors';
+import { useEffect } from 'react';
+import { fetchContactsThunk } from '../redux/operations';
 
 export const App = () => {
-  const { contacts } = useSelector(selectContacts);
+  const contacts = useSelector(selectContacts);
+  const error = useSelector(selectError);
+  const isLoading = useSelector(selectIsLoading);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContactsThunk());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -23,6 +36,8 @@ export const App = () => {
           You don't have any contacts in your phonebook yet.
         </StyledText>
       )}
+      {isLoading && <StyledText>Loading...</StyledText>}
+      {error && <StyledText>{error}</StyledText>}
     </Container>
   );
 };

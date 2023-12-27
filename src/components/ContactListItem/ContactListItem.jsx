@@ -1,36 +1,22 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContactAction } from '../../redux/phonebookSlice';
+import { useDispatch } from 'react-redux';
 import {
   StyledContactItem,
   StyledSpan,
   StyledBtn,
 } from './ContactListItem.styled';
+import { deleteContactsThunk } from '../../redux/operations';
 
-export const ContactListItem = () => {
+export const ContactListItem = ({ name, phone, id }) => {
   const dispatch = useDispatch();
 
-  const filter = useSelector(state => state.phonebook.filter);
-  const contacts = useSelector(state => state.phonebook.contacts);
-
-  const getFilteredContacts = () => {
-    return contacts.filter(item =>
-      item.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-  /* const filteredContacts = useMemo(() => {
-    return contacts.filter(item =>
-      item.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  }, [contacts, filter]); */
-
-  return getFilteredContacts().map(item => (
-    <StyledContactItem key={item.id}>
+  return (
+    <StyledContactItem>
       <p>
-        <StyledSpan>{item.name}:</StyledSpan> {item.number}
+        <StyledSpan>{name}:</StyledSpan> {phone}
       </p>
-      <StyledBtn onClick={() => dispatch(deleteContactAction(item.id))}>
+      <StyledBtn onClick={() => dispatch(deleteContactsThunk(id))}>
         Delete
       </StyledBtn>
     </StyledContactItem>
-  ));
+  );
 };
